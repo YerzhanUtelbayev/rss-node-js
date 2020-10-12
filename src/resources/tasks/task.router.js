@@ -5,7 +5,7 @@ const taskService = require('./task.service');
 router.route('/').get(async (req, res) => {
   const { boardId } = req.params;
   const tasks = await taskService.getByBoardId(boardId);
-  return res.json(tasks.map(Task.toResponse));
+  return res.json(tasks);
 });
 
 router.route('/').post(async (req, res) => {
@@ -29,15 +29,16 @@ router.route('/:taskId').get(async (req, res) => {
   const { taskId } = req.params;
   const result = await taskService.getById(taskId);
   if (!result) {
-    return res.sendStatus(400);
+    return res.sendStatus(404);
   }
 
-  return res.json(Task.toResponse(result));
+  return res.json(result);
 });
 
-router.put('/:taskId').put(async (req, res) => {
+router.route('/:taskId').put(async (req, res) => {
   const { taskId } = req.params;
   const taskData = Task.getFromRequest(req.body);
+
   const result = await taskService.update(taskId, taskData);
 
   if (!result) {
