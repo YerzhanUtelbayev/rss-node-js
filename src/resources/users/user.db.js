@@ -1,8 +1,7 @@
-const mockUsers = require('./users.mock.json');
 const User = require('./user.model');
 
 class UserDB {
-  constructor(users) {
+  constructor(users = []) {
     this._db = [...users];
 
     this.create = this.create.bind(this);
@@ -47,6 +46,6 @@ class UserDB {
   }
 }
 
-const usersDb = new UserDB(mockUsers.map((user) => new User(user)));
+const usersDb = new UserDB();
 
 module.exports = usersDb;
