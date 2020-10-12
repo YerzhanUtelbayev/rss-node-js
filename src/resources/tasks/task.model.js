@@ -2,7 +2,7 @@ const uuid = require('uuid');
 
 class Task {
   constructor({
-    id = uuid.v4,
+    id = uuid.v4(),
     title,
     order = 0,
     description = '',
@@ -17,6 +17,11 @@ class Task {
     this.userId = userId;
     this.boardId = boardId;
     this.columnId = columnId;
+  }
+
+  static getFromRequest(task) {
+    const { title, order, description, userId, boardId, columnId } = task;
+    return { title, order, description, userId, boardId, columnId };
   }
 
   static toResponse(task) {
