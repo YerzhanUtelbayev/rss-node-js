@@ -10,4 +10,6 @@ const update = (taskId, taskData) => taskRepo.update(taskId, taskData);
 
 const remove = (taskId) => taskRepo.remove(taskId);
 
-module.exports = { create, getByBoardId, getById, update, remove };
+const getByUserId = (userId) => taskRepo.getByUserId(userId);
+
+module.exports = { create, getByBoardId, getById, update, remove, getByUserId };

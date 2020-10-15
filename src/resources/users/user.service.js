@@ -1,4 +1,5 @@
 const userRepo = require('./user.memory.repository');
+const tasksService = require('../tasks/task.service');
 
 const create = (userData) => userRepo.create(userData);
 
@@ -8,6 +9,16 @@ const getById = (userId) => userRepo.getById(userId);
 
 const update = (userId, userData) => userRepo.update(userId, userData);
 
-const remove = (userId) => userRepo.remove(userId);
+const unassignUserTasks = async (userId) => {
+  const tasks = await tasksService.getByUserId(userId);
+  if (tasks.length > 0) {
+    tasks.forEach(({ id }) => tasksService.update(id, { userId: null }));
+  }
+};
+
+const remove = (userId) => {
+  unassignUserTasks(userId);
+  return userRepo.remove(userId);
+};
 
 module.exports = { create, getAll, getById, update, remove };
