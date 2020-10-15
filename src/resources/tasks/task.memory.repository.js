@@ -10,4 +10,6 @@ const update = async (taskId, taskData) => taskDb.updateOne(taskId, taskData);
 
 const remove = async (taskId) => taskDb.remove(taskId);
 
-module.exports = { create, getByBoardId, getById, update, remove };
+const getByUserId = async (userId) => taskDb.findByUserId(userId);
+
+module.exports = { create, getByBoardId, getById, update, remove, getByUserId };
