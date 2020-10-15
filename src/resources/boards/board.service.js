@@ -9,12 +9,15 @@ const getById = (boardId) => boardRepo.getById(boardId);
 
 const update = (boardId, boardData) => boardRepo.update(boardId, boardData);
 
-const remove = async (boardId) => {
+const removeLinkedTasks = async (boardId) => {
   const tasks = await taskService.getByBoardId(boardId);
   if (tasks.length > 0) {
     tasks.forEach(({ id }) => taskService.remove(id));
   }
+};
 
+const remove = (boardId) => {
+  removeLinkedTasks(boardId);
   return boardRepo.remove(boardId);
 };
 
