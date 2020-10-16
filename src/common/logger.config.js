@@ -3,7 +3,7 @@ const { combine, timestamp, json, simple } = format;
 
 const userLogger = createLogger({
   level: 'info',
-  format: combine(timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), json()),
+  format: combine(timestamp(), json()),
   defaultMeta: { service: 'user-service' },
   transports: [
     new transports.Console({ format: simple() }),
@@ -14,7 +14,7 @@ const userLogger = createLogger({
 
 const commonLogger = createLogger({
   level: 'info',
-  format: combine(timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), json()),
+  format: combine(timestamp(), json()),
   defaultMeta: { service: 'board-service, task-service' },
   transports: [
     new transports.Console({ format: simple() }),
