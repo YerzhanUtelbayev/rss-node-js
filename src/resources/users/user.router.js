@@ -1,6 +1,8 @@
 const router = require('express').Router();
+
 const User = require('./user.model');
 const userService = require('./user.service');
+const UserNotFoundException = require('../../exceptions/UserNotFoundException');
 
 router.route('/').get(async (req, res) => {
   const users = await userService.getAll();
@@ -23,11 +25,11 @@ router.route('/').post(async (req, res) => {
   }
 });
 
-router.route('/:id').get(async (req, res) => {
+router.route('/:id').get(async (req, res, next) => {
   const { id } = req.params;
   const result = await userService.getById(id);
   if (!result) {
-    return res.sendStatus(404);
+    return next(new UserNotFoundException(id));
   }
   return res.json(User.toResponse(result));
 });
@@ -45,11 +47,11 @@ router.route('/:id').put(async (req, res) => {
   return res.json(User.toResponse(result));
 });
 
-router.route('/:id').delete(async (req, res) => {
+router.route('/:id').delete(async (req, res, next) => {
   const { id } = req.params;
   const result = await userService.remove(id);
   if (!result) {
-    return res.sendStatus(404);
+    return next(new UserNotFoundException(id));
   }
   return res.sendStatus(204);
 });
