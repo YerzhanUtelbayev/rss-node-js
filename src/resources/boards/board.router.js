@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const Board = require('./board.model');
 const boardService = require('./board.service');
-const taskRouter = require('../tasks/task.router');
 
 router.route('/').get(async (req, res) => {
   const boards = await boardService.getAll();
@@ -56,7 +55,5 @@ router.route('/:boardId').delete(async (req, res) => {
   }
   return res.sendStatus(204);
 });
-
-router.use('/:boardId/tasks', taskRouter);
 
 module.exports = router;
