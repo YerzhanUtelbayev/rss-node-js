@@ -24,11 +24,11 @@ app.use('/', (req, res, next) => {
   next();
 });
 
-app.use(errorMiddleware);
-
 app.use('/users', loggerMiddleware.logUserRequests, userRouter);
 app.use('/boards', loggerMiddleware.logCommonRequests, boardRouter);
 
 boardRouter.use('/:boardId/tasks', taskRouter);
+
+app.use(errorMiddleware);
 
 module.exports = app;
