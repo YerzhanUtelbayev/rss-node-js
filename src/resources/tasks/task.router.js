@@ -1,6 +1,9 @@
 const router = require('express').Router({ mergeParams: true });
+
 const Task = require('./task.model');
 const taskService = require('./task.service');
+const HttpException = require('../../exceptions/HttpException');
+const TaskNotFoundException = require('../../exceptions/TaskNotFoundException');
 
 router.route('/').get(async (req, res) => {
   const { boardId } = req.params;
@@ -8,7 +11,7 @@ router.route('/').get(async (req, res) => {
   return res.json(tasks);
 });
 
-router.route('/').post(async (req, res) => {
+router.route('/').post(async (req, res, next) => {
   const { boardId } = req.params;
   const { body } = req;
 
@@ -21,15 +24,15 @@ router.route('/').post(async (req, res) => {
     }
     return res.json(result);
   } catch (error) {
-    return res.sendStatus(500);
+    return next(new HttpException());
   }
 });
 
-router.route('/:taskId').get(async (req, res) => {
+router.route('/:taskId').get(async (req, res, next) => {
   const { taskId } = req.params;
   const result = await taskService.getById(taskId);
   if (!result) {
-    return res.sendStatus(404);
+    return next(new TaskNotFoundException(taskId));
   }
 
   return res.json(result);
@@ -48,11 +51,11 @@ router.route('/:taskId').put(async (req, res) => {
   return res.json(result);
 });
 
-router.route('/:taskId').delete(async (req, res) => {
+router.route('/:taskId').delete(async (req, res, next) => {
   const { taskId } = req.params;
   const result = await taskService.remove(taskId);
   if (!result) {
-    return res.sendStatus(404);
+    return next(new TaskNotFoundException(taskId));
   }
   return res.sendStatus(204);
 });

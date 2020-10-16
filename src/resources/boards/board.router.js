@@ -1,6 +1,8 @@
 const router = require('express').Router();
+
 const Board = require('./board.model');
 const boardService = require('./board.service');
+const BoardNotFoundException = require('../../exceptions/BoardNotFoundException');
 
 router.route('/').get(async (req, res) => {
   const boards = await boardService.getAll();
@@ -24,11 +26,11 @@ router.route('/').post(async (req, res) => {
   }
 });
 
-router.route('/:boardId').get(async (req, res) => {
+router.route('/:boardId').get(async (req, res, next) => {
   const { boardId } = req.params;
   const result = await boardService.getById(boardId);
   if (!result) {
-    return res.sendStatus(404);
+    return next(new BoardNotFoundException(boardId));
   }
 
   return res.json(result);
@@ -47,11 +49,11 @@ router.route('/:boardId').put(async (req, res) => {
   return res.json(result);
 });
 
-router.route('/:boardId').delete(async (req, res) => {
+router.route('/:boardId').delete(async (req, res, next) => {
   const { boardId } = req.params;
   const result = await boardService.remove(boardId);
   if (!result) {
-    return res.sendStatus(404);
+    return next(new BoardNotFoundException(boardId));
   }
   return res.sendStatus(204);
 });
