@@ -1,10 +1,10 @@
-const HttpException = require('./HttpException');
+const EntityNotFoundException = require('./EntityNotFoundException');
 
-class TaskNotFoundException extends HttpException {
+class BoardNotFoundException extends EntityNotFoundException {
   constructor(id) {
-    super(404, `Board with id ${id} not found`);
+    super(`Board with id ${id} not found`);
     this.name = this.constructor.name;
   }
 }
 
-module.exports = TaskNotFoundException;
+module.exports = BoardNotFoundException;

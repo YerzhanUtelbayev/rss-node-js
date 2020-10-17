@@ -1,8 +1,8 @@
-const HttpException = require('./HttpException');
+const EntityNotFoundException = require('./EntityNotFoundException');
 
-class UserNotFoundException extends HttpException {
+class UserNotFoundException extends EntityNotFoundException {
   constructor(id) {
-    super(404, `User with id ${id} not found`);
+    super(`User with id ${id} not found`);
     this.name = this.constructor.name;
   }
 }
