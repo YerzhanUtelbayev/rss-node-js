@@ -1,10 +1,9 @@
+/* eslint-disable no-unused-vars */
 const { errorLogger } = require('../common/logger.config');
 
-// eslint-disable-next-line no-unused-vars
-function errorMiddleware(error, request, response, next) {
+function errorMiddleware(error, request, response, _next) {
   const { status = 500, message = 'Something went wrong' } = error;
   const {
-    // eslint-disable-next-line no-unused-vars
     body: { password, ...rest },
     method,
     originalUrl,
