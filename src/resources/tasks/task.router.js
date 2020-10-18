@@ -4,6 +4,8 @@ const Task = require('./task.model');
 const taskService = require('./task.service');
 const HttpException = require('../../exceptions/HttpException');
 const TaskNotFoundException = require('../../exceptions/TaskNotFoundException');
+const validationMiddleware = require('../../middleware/validation.middleware');
+const schemas = require('../../common/validation.schemas');
 
 router.route('/').get(async (req, res) => {
   const { boardId } = req.params;
@@ -11,22 +13,24 @@ router.route('/').get(async (req, res) => {
   return res.json(tasks);
 });
 
-router.route('/').post(async (req, res, next) => {
-  const { boardId } = req.params;
-  const { body } = req;
+router
+  .route('/')
+  .post(validationMiddleware(schemas.TASK, 'body'), async (req, res, next) => {
+    const { boardId } = req.params;
+    const { body } = req;
 
-  const taskData = Task.getFromRequest(body);
+    const taskData = Task.getFromRequest(body);
 
-  try {
-    const result = await taskService.create({ ...taskData, boardId });
-    if (!result) {
-      return res.sendStatus(400);
+    try {
+      const result = await taskService.create({ ...taskData, boardId });
+      if (!result) {
+        return res.sendStatus(400);
+      }
+      return res.json(result);
+    } catch (error) {
+      return next(new HttpException());
     }
-    return res.json(result);
-  } catch (error) {
-    return next(new HttpException());
-  }
-});
+  });
 
 router.route('/:taskId').get(async (req, res, next) => {
   const { taskId } = req.params;
@@ -38,18 +42,20 @@ router.route('/:taskId').get(async (req, res, next) => {
   return res.json(result);
 });
 
-router.route('/:taskId').put(async (req, res) => {
-  const { taskId } = req.params;
-  const taskData = Task.getFromRequest(req.body);
+router
+  .route('/:taskId')
+  .put(validationMiddleware(schemas.TASK, 'body'), async (req, res) => {
+    const { taskId } = req.params;
+    const taskData = Task.getFromRequest(req.body);
 
-  const result = await taskService.update(taskId, taskData);
+    const result = await taskService.update(taskId, taskData);
 
-  if (!result) {
-    return res.sendStatus(400);
-  }
+    if (!result) {
+      return res.sendStatus(400);
+    }
 
-  return res.json(result);
-});
+    return res.json(result);
+  });
 
 router.route('/:taskId').delete(async (req, res, next) => {
   const { taskId } = req.params;
