@@ -31,8 +31,17 @@ const USER = Joi.object().keys({
   password: Joi.string().min(3).max(30).required()
 });
 
-const BOARD_DETAIL = {
-  boardId: ID
-};
+const BOARD_DETAIL = Joi.object().keys({
+  boardId: ID.required()
+});
 
-module.exports = { BOARD, BOARD_DETAIL, TASK, USER };
+const TASK_DETAIL = Joi.object().keys({
+  boardId: ID.required(),
+  taskId: ID.required()
+});
+
+const USER_DETAIL = Joi.object().keys({
+  userId: ID.required()
+});
+
+module.exports = { BOARD, BOARD_DETAIL, TASK, TASK_DETAIL, USER, USER_DETAIL };

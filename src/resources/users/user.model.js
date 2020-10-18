@@ -13,6 +13,11 @@ class User {
     this.password = password;
   }
 
+  static mapRequest(user) {
+    const { name, login, password } = user;
+    return { name, login, password };
+  }
+
   static toResponse(user) {
     const { id, name, login } = user;
     return { id, name, login };

@@ -31,7 +31,7 @@ class UserDB {
   updateOne(userId, userData) {
     this._db = this._db.map((user) => {
       if (user.id === userId) {
-        return { ...user, ...userData };
+        return new User({ ...user, ...userData });
       }
       return user;
     });

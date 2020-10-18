@@ -6,6 +6,8 @@ const UserNotFoundException = require('../../exceptions/UserNotFoundException');
 const validationMiddleware = require('../../middleware/validation.middleware');
 const schemas = require('../../common/validation.schemas');
 
+router.param('userId', validationMiddleware(schemas.USER_DETAIL, 'params'));
+
 router.route('/').get(async (req, res) => {
   const users = await userService.getAll();
   res.json(users.map(User.toResponse));
@@ -15,36 +17,40 @@ router
   .route('/')
   .post(validationMiddleware(schemas.USER, 'body'), async (req, res) => {
     const { body } = req;
-    const user = new User(body);
+    const userData = User.mapRequest(body);
 
     try {
-      const result = await userService.create(user);
+      const result = await userService.create(userData);
       if (!result) {
         return res.sendStatus(400);
       }
       return res.json(User.toResponse(result));
     } catch (error) {
-      console.log(error);
       return res.sendStatus(500);
     }
   });
 
-router.route('/:id').get(async (req, res, next) => {
-  const { id } = req.params;
-  const result = await userService.getById(id);
+router.route('/:userId').get(async (req, res, next) => {
+  const {
+    params: { userId }
+  } = req;
+  const result = await userService.getById(userId);
   if (!result) {
-    return next(new UserNotFoundException(id));
+    return next(new UserNotFoundException(userId));
   }
   return res.json(User.toResponse(result));
 });
 
 router
-  .route('/:id')
+  .route('/:userId')
   .put(validationMiddleware(schemas.USER, 'body'), async (req, res) => {
-    const { id } = req.params;
-    const { name, login, password } = req.body;
+    const {
+      params: { userId },
+      body
+    } = req;
+    const userData = User.mapRequest(body);
 
-    const result = await userService.update(id, { name, login, password });
+    const result = await userService.update(userId, userData);
 
     if (!result) {
       return res.sendStatus(400);
@@ -53,11 +59,11 @@ router
     return res.json(User.toResponse(result));
   });
 
-router.route('/:id').delete(async (req, res, next) => {
-  const { id } = req.params;
-  const result = await userService.remove(id);
+router.route('/:userId').delete(async (req, res, next) => {
+  const { userId } = req.params;
+  const result = await userService.remove(userId);
   if (!result) {
-    return next(new UserNotFoundException(id));
+    return next(new UserNotFoundException(userId));
   }
   return res.sendStatus(204);
 });

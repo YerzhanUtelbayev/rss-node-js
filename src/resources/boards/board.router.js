@@ -6,6 +6,8 @@ const BoardNotFoundException = require('../../exceptions/BoardNotFoundException'
 const validationMiddleware = require('../../middleware/validation.middleware');
 const schemas = require('../../common/validation.schemas');
 
+router.param('boardId', validationMiddleware(schemas.BOARD_DETAIL, 'params'));
+
 router.route('/').get(async (req, res) => {
   const boards = await boardService.getAll();
   return res.json(boards);

@@ -19,7 +19,7 @@ class Task {
     this.columnId = columnId;
   }
 
-  static getFromRequest(task) {
+  static mapRequest(task) {
     const { title, order, description, userId, boardId, columnId } = task;
     return { title, order, description, userId, boardId, columnId };
   }
