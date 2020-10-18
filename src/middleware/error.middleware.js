@@ -2,7 +2,7 @@
 const { errorLogger } = require('../common/logger.config');
 
 function errorMiddleware(error, request, response, _next) {
-  const { status = 500, message = 'Something went wrong' } = error;
+  const { status = 500, message = 'Something went wrong', name } = error;
   const {
     body: { password, ...rest },
     method,
@@ -13,7 +13,8 @@ function errorMiddleware(error, request, response, _next) {
   errorLogger.error(`${method} ${originalUrl}`, {
     body: rest,
     query,
-    error
+    name,
+    message
   });
   response.status(status).send({ message, status });
 }

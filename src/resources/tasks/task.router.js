@@ -6,6 +6,10 @@ const HttpException = require('../../exceptions/HttpException');
 const TaskNotFoundException = require('../../exceptions/TaskNotFoundException');
 const validationMiddleware = require('../../middleware/validation.middleware');
 const schemas = require('../../common/validation.schemas');
+const validateBoard = require('../../middleware/validateboard.middleware');
+
+router.use(validateBoard);
+router.param('taskId', validationMiddleware(schemas.TASK_DETAIL, 'params'));
 
 router.route('/').get(async (req, res) => {
   const { boardId } = req.params;
@@ -19,7 +23,7 @@ router
     const { boardId } = req.params;
     const { body } = req;
 
-    const taskData = Task.getFromRequest(body);
+    const taskData = Task.mapRequest(body);
 
     try {
       const result = await taskService.create({ ...taskData, boardId });
@@ -46,7 +50,7 @@ router
   .route('/:taskId')
   .put(validationMiddleware(schemas.TASK, 'body'), async (req, res) => {
     const { taskId } = req.params;
-    const taskData = Task.getFromRequest(req.body);
+    const taskData = Task.mapRequest(req.body);
 
     const result = await taskService.update(taskId, taskData);
 
