@@ -1,69 +1,30 @@
 const router = require('express').Router();
 
-const Board = require('./board.model');
-const boardService = require('./board.service');
-const BoardNotFoundException = require('../../exceptions/BoardNotFoundException');
+const asyncHandler = require('../../common/async.handler');
+const boardController = require('./board.controller');
 const validationMiddleware = require('../../middleware/validation.middleware');
 const schemas = require('../../common/validation.schemas');
 
 router.param('boardId', validationMiddleware(schemas.BOARD_DETAIL, 'params'));
 
-router.route('/').get(async (req, res) => {
-  const boards = await boardService.getAll();
-  return res.json(boards);
-});
+router.route('/').get(asyncHandler(boardController.getAll));
 
 router
   .route('/')
-  .post(validationMiddleware(schemas.BOARD, 'body'), async (req, res) => {
-    const {
-      body: { title, columns }
-    } = req;
-    const board = new Board({ title, columns });
+  .post(
+    validationMiddleware(schemas.BOARD, 'body'),
+    asyncHandler(boardController.create)
+  );
 
-    try {
-      const result = await boardService.create(board);
-      if (!result) {
-        return res.sendStatus(400);
-      }
-      return res.json(result);
-    } catch (error) {
-      return res.sendStatus(500);
-    }
-  });
-
-router.route('/:boardId').get(async (req, res, next) => {
-  const { boardId } = req.params;
-  const result = await boardService.getById(boardId);
-  if (!result) {
-    return next(new BoardNotFoundException(boardId));
-  }
-
-  return res.json(result);
-});
+router.route('/:boardId').get(asyncHandler(boardController.getById));
 
 router
   .route('/:boardId')
-  .put(validationMiddleware(schemas.BOARD, 'body'), async (req, res) => {
-    const { boardId } = req.params;
-    const { title, columns } = req.body;
+  .put(
+    validationMiddleware(schemas.BOARD, 'body'),
+    asyncHandler(boardController.update)
+  );
 
-    const result = await boardService.update(boardId, { title, columns });
-
-    if (!result) {
-      return res.sendStatus(400);
-    }
-
-    return res.json(result);
-  });
-
-router.route('/:boardId').delete(async (req, res, next) => {
-  const { boardId } = req.params;
-  const result = await boardService.remove(boardId);
-  if (!result) {
-    return next(new BoardNotFoundException(boardId));
-  }
-  return res.sendStatus(204);
-});
+router.route('/:boardId').delete(asyncHandler(boardController.remove));
 
 module.exports = router;
