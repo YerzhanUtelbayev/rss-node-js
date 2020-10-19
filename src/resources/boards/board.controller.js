@@ -1,6 +1,7 @@
 const Board = require('./board.model');
 const boardService = require('./board.service');
 const BoardNotFoundException = require('../../exceptions/BoardNotFoundException');
+const EntityNotSavedException = require('../../exceptions/EntityNotSavedException');
 
 const getAll = async (request, response) => {
   const boards = await boardService.getAll();
@@ -15,16 +16,16 @@ const create = async (request, response) => {
 
   const result = await boardService.create(board);
   if (!result) {
-    return response.sendStatus(400);
+    throw new EntityNotSavedException();
   }
   return response.json(result);
 };
 
-const getById = async (request, response, next) => {
+const getById = async (request, response) => {
   const { boardId } = request.params;
   const result = await boardService.getById(boardId);
   if (!result) {
-    return next(new BoardNotFoundException(boardId));
+    throw new BoardNotFoundException(boardId);
   }
 
   return response.json(result);
@@ -37,7 +38,7 @@ const update = async (request, response) => {
   const result = await boardService.update(boardId, { title, columns });
 
   if (!result) {
-    return response.sendStatus(400);
+    throw new EntityNotSavedException();
   }
 
   return response.json(result);
