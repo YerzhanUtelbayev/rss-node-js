@@ -5,6 +5,7 @@ const YAML = require('yamljs');
 
 const loggerMiddleware = require('./middleware/logging.middleware');
 const errorMiddleware = require('./middleware/error.middleware');
+const { errorLogger } = require('./common/logger.config');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
@@ -30,5 +31,18 @@ app.use('/boards', loggerMiddleware.logCommonRequests, boardRouter);
 boardRouter.use('/:boardId/tasks', taskRouter);
 
 app.use(errorMiddleware);
+
+process
+  .on('unhandledRejection', (reason, promise) => {
+    errorLogger.error('Unhandled Rejection at: ', {
+      stack: reason.stack,
+      promise
+    });
+  })
+  .on('uncaughtException', (error) => {
+    errorLogger.error('Uncaught Exception thrown', { stack: error.stack });
+    // eslint-disable-next-line no-process-exit
+    process.exit(1);
+  });
 
 module.exports = app;
