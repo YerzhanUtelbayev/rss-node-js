@@ -8,6 +8,7 @@ class BoardDB {
     this.findAll = this.findAll.bind(this);
     this.findById = this.findById.bind(this);
     this.updateOne = this.updateOne.bind(this);
+    this.remove = this.remove.bind(this);
   }
 
   create(boardData) {

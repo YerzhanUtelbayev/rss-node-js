@@ -7,7 +7,9 @@ class TaskDB {
     this.create = this.create.bind(this);
     this.findByBoardId = this.findByBoardId.bind(this);
     this.findById = this.findById.bind(this);
+    this.findByUserId = this.findByUserId.bind(this);
     this.updateOne = this.updateOne.bind(this);
+    this.remove = this.remove.bind(this);
   }
 
   create(taskData) {
