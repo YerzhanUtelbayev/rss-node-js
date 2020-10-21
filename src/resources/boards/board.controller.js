@@ -44,11 +44,11 @@ const update = async (request, response) => {
   return response.json(result);
 };
 
-const remove = async (request, response, next) => {
+const remove = async (request, response) => {
   const { boardId } = request.params;
   const result = await boardService.remove(boardId);
   if (!result) {
-    return next(new BoardNotFoundException(boardId));
+    throw new BoardNotFoundException(boardId);
   }
   return response.sendStatus(204);
 };
