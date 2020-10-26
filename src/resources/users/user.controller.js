@@ -1,4 +1,4 @@
-const User = require('./user.model');
+const User = require('./user.mapper');
 const userService = require('./user.service');
 const UserNotFoundException = require('../../exceptions/UserNotFoundException');
 const EntityNotSavedException = require('../../exceptions/EntityNotSavedException');
