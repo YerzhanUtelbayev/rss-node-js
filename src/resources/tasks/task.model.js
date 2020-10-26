@@ -9,9 +9,9 @@ const TaskSchema = new Schema({
   },
   order: {
     type: Number,
-    min: 1,
+    min: 0,
     max: 100,
-    default: 1
+    default: 0
   },
   description: {
     type: String
