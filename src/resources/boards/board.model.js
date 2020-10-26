@@ -1,13 +1,25 @@
-const uuid = require('uuid');
+const mongoose = require('mongoose');
 
-const Column = require('./column.model');
+const { Schema, model } = mongoose;
 
-class Board {
-  constructor({ id = uuid.v4(), title, columns = [] } = {}) {
-    this.id = id;
-    this.title = title;
-    this.columns = columns.map((column) => new Column(column));
+const ColumnSchema = new Schema({
+  title: {
+    type: String,
+    required: true
+  },
+  order: {
+    type: String
   }
-}
+});
+
+const BoardSchema = new Schema({
+  title: {
+    type: String,
+    required: true
+  },
+  columns: ColumnSchema
+});
+
+const Board = model('Board', BoardSchema);
 
 module.exports = Board;
