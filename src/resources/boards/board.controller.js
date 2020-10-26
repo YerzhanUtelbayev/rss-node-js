@@ -1,24 +1,22 @@
-const Board = require('./board.model');
+const boardMapper = require('./board.mapper');
 const boardService = require('./board.service');
 const BoardNotFoundException = require('../../exceptions/BoardNotFoundException');
 const EntityNotSavedException = require('../../exceptions/EntityNotSavedException');
 
 const getAll = async (request, response) => {
   const boards = await boardService.getAll();
-  return response.json(boards);
+  return response.json(boards.map(boardMapper.toResponse));
 };
 
 const create = async (request, response) => {
-  const {
-    body: { title, columns }
-  } = request;
-  const board = new Board({ title, columns });
+  const { body } = request;
+  const boardData = boardMapper.fromRequest(body);
 
-  const result = await boardService.create(board);
+  const result = await boardService.create(boardData);
   if (!result) {
     throw new EntityNotSavedException();
   }
-  return response.json(result);
+  return response.json(boardMapper.toResponse(result));
 };
 
 const getById = async (request, response) => {
@@ -28,7 +26,7 @@ const getById = async (request, response) => {
     throw new BoardNotFoundException(boardId);
   }
 
-  return response.json(result);
+  return response.json(boardMapper.toResponse(result));
 };
 
 const update = async (request, response) => {
@@ -41,7 +39,7 @@ const update = async (request, response) => {
     throw new EntityNotSavedException();
   }
 
-  return response.json(result);
+  return response.json(boardMapper.toResponse(result));
 };
 
 const remove = async (request, response) => {
