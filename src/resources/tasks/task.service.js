@@ -1,4 +1,4 @@
-const taskRepo = require('./task.memory.repository');
+const taskRepo = require('./task.mongodb.repository');
 
 const create = (taskData) => taskRepo.create(taskData);
 
@@ -10,6 +10,17 @@ const update = (taskId, taskData) => taskRepo.update(taskId, taskData);
 
 const remove = (taskId) => taskRepo.remove(taskId);
 
-const getByUserId = (userId) => taskRepo.getByUserId(userId);
+const removeByBoardId = (boardId) => taskRepo.removeByBoardId(boardId);
 
-module.exports = { create, getByBoardId, getById, update, remove, getByUserId };
+const unassignUsersTasks = (userId) =>
+  taskRepo.updateMany({ userId }, { userId: null });
+
+module.exports = {
+  create,
+  getByBoardId,
+  getById,
+  update,
+  remove,
+  removeByBoardId,
+  unassignUsersTasks
+};
