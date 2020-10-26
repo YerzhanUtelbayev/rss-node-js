@@ -1,6 +1,7 @@
 const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 
-const ID = Joi.string().guid({ version: ['uuidv4'] });
+const ID = Joi.objectId();
 
 const COLUMN = Joi.object().keys({
   id: ID,
