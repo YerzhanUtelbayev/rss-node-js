@@ -3,12 +3,17 @@ const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
 
 const ColumnSchema = new Schema({
+  _id: {
+    type: Schema.Types.ObjectId
+  },
   title: {
     type: String,
     required: true
   },
   order: {
-    type: String
+    type: Number,
+    min: 1,
+    default: 1
   }
 });
 
@@ -17,7 +22,7 @@ const BoardSchema = new Schema({
     type: String,
     required: true
   },
-  columns: ColumnSchema
+  columns: [ColumnSchema]
 });
 
 const Board = model('Board', BoardSchema);
