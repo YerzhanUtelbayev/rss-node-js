@@ -15,7 +15,7 @@ const userLogger = createLogger({
 const commonLogger = createLogger({
   level: 'info',
   format: combine(timestamp(), json()),
-  defaultMeta: { service: 'board-service, task-service' },
+  defaultMeta: { service: 'common' },
   transports: [
     new transports.Console({ level: 'info', format: simple() }),
     new transports.File({ filename: 'logs/error.log', level: 'error' }),
