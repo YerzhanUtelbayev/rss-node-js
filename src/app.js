@@ -2,6 +2,8 @@ const express = require('express');
 const swaggerUI = require('swagger-ui-express');
 const path = require('path');
 const YAML = require('yamljs');
+const helmet = require('helmet');
+const cors = require('cors');
 
 const loggerMiddleware = require('./middleware/logging.middleware');
 const errorMiddleware = require('./middleware/error.middleware');
@@ -12,6 +14,9 @@ const taskRouter = require('./resources/tasks/task.router');
 
 const app = express();
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
+
+app.use(helmet());
+app.use(cors());
 
 app.use(express.json());
 
