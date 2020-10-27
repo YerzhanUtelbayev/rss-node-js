@@ -16,7 +16,10 @@ function errorMiddleware(error, request, response, _next) {
     name,
     message
   });
-  response.status(status).send({ message, status });
+  response.status(status).send({
+    message: status === 500 ? 'Something went wrong' : message,
+    status
+  });
 }
 
 module.exports = errorMiddleware;
