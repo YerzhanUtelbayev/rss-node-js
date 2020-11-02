@@ -10,6 +10,7 @@ const dotenv = require('dotenv');
 const loggerMiddleware = require('./middleware/logging.middleware');
 const errorMiddleware = require('./middleware/error.middleware');
 const { errorLogger, commonLogger } = require('./common/logger.config');
+const authenticationRouter = require('./resources/authentication/authentication.router');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
@@ -53,6 +54,8 @@ connected.once('open', () => {
     }
     next();
   });
+
+  app.use('/login', authenticationRouter);
 
   app.use('/users', loggerMiddleware.logUserRequests, userRouter);
   app.use('/boards', loggerMiddleware.logCommonRequests, boardRouter);

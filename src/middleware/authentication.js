@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 
+const { JWT_SECRET_KEY } = require('../common/config');
 const User = require('../resources/users/user.model');
 const AuthTokenMissingException = require('../exceptions/AuthTokenMissing');
 const WrongAuthTokenException = require('../exceptions/WrongAuthToken');
@@ -11,15 +12,15 @@ async function authMiddleware(request, response, next) {
       throw new AuthTokenMissingException();
     }
 
-    const secret = process.env.JWT_SECRET_KEY;
+    const secret = JWT_SECRET_KEY;
     const token = authHeader.startsWith('Bearer ')
       ? authHeader.slice(7, authHeader.length)
       : authHeader;
 
     const verificationResponse = jwt.verify(token, secret);
-    const { _id } = verificationResponse;
-    const userDoc = await User.findById(_id);
-    if (!userDoc) {
+    const { userId, login } = verificationResponse;
+    const userDoc = await User.findById(userId);
+    if (!userDoc || userDoc.login !== login) {
       throw new WrongAuthTokenException();
     }
 

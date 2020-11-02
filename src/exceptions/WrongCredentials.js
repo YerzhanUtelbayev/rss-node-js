@@ -2,11 +2,11 @@ const { StatusCodes } = require('http-status-codes');
 
 const HttpException = require('./HttpException');
 
-class WrongAuthTokenException extends HttpException {
+class WrongCredentialsException extends HttpException {
   constructor() {
-    super(StatusCodes.UNAUTHORIZED, 'Incorrect authentication token');
+    super(StatusCodes.UNAUTHORIZED, 'Wrong credentials provided');
     this.name = this.constructor.name;
   }
 }
 
-module.exports = WrongAuthTokenException;
+module.exports = WrongCredentialsException;
