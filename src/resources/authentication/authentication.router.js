@@ -3,7 +3,7 @@ const router = require('express').Router();
 const asyncHandler = require('../../common/async.handler');
 const authenticationService = require('./authentication.service');
 
-router.route('/login').post(
+router.route('/').post(
   asyncHandler(async (request, response) => {
     const {
       body: { login, password }
