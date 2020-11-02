@@ -9,14 +9,11 @@ const createToken = (userId, login) => {
   const secret = JWT_SECRET_KEY;
 
   const dataStoredInToken = { userId, login };
-  return {
-    expiresIn,
-    token: jwt.sign(dataStoredInToken, secret, { expiresIn })
-  };
+  return jwt.sign(dataStoredInToken, secret, { expiresIn });
 };
 
 const signIn = async (login, password) => {
-  const userDoc = User.findOne({ login });
+  const userDoc = await User.findOne({ login });
   if (!userDoc) {
     throw new WrongCredentialsException();
   }

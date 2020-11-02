@@ -12,12 +12,14 @@ async function authMiddleware(request, response, next) {
       throw new AuthTokenMissingException();
     }
 
-    const secret = JWT_SECRET_KEY;
     const token = authHeader.startsWith('Bearer ')
       ? authHeader.slice(7, authHeader.length)
       : authHeader;
+    if (!token) {
+      throw new AuthTokenMissingException();
+    }
 
-    const verificationResponse = jwt.verify(token, secret);
+    const verificationResponse = jwt.verify(token, JWT_SECRET_KEY);
     const { userId, login } = verificationResponse;
     const userDoc = await User.findById(userId);
     if (!userDoc || userDoc.login !== login) {
