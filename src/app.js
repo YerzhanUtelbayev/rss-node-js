@@ -6,6 +6,7 @@ const YAML = require('yamljs');
 const helmet = require('helmet');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const unless = require('express-unless');
 
 const loggerMiddleware = require('./middleware/logging.middleware');
 const errorMiddleware = require('./middleware/error.middleware');
@@ -19,6 +20,7 @@ const taskRouter = require('./resources/tasks/task.router');
 dotenv.config();
 
 const app = express();
+authenticationMiddleware.unless = unless;
 
 app.use(helmet());
 app.use(cors());
@@ -56,18 +58,16 @@ connected.once('open', () => {
     next();
   });
 
+  app.use(
+    authenticationMiddleware.unless({
+      path: ['/doc', '/', '/login']
+    })
+  );
+
   app.use('/login', authenticationRouter);
 
-  app.use(
-    '/users',
-    [loggerMiddleware.logUserRequests, authenticationMiddleware],
-    userRouter
-  );
-  app.use(
-    '/boards',
-    [loggerMiddleware.logCommonRequests, authenticationMiddleware],
-    boardRouter
-  );
+  app.use('/users', loggerMiddleware.logUserRequests, userRouter);
+  app.use('/boards', loggerMiddleware.logCommonRequests, boardRouter);
 
   boardRouter.use('/:boardId/tasks', taskRouter);
 
